@@ -1,4 +1,19 @@
-#!/usr/bin/python
+#!/usr/bin/python3
+"""Create per-country datasets from the HXL data at the UNHCR Population statistics site.
+
+http://popstats.unhcr.org/en/overview
+
+For each country, there will be two datasets: one listing refugees
+originating from the country, and one listing refugees resident in the
+country.
+
+The script relies on a Google Sheet.  If that sheet becomes unavailable, there are backups
+of its data tabs in Inputs/.
+
+See README.md for more details.
+
+Started 2015-10-13 by David Megginson
+"""
 
 import config
 
@@ -101,12 +116,12 @@ class Resource(object):
 #
 # Create or update the datasets
 #
-datasets = hxl.data(DATASETS_URL).cache() # cache for repeated use
-resources = hxl.data(RESOURCES_URL).cache() # cache for repeated use
+datasets = hxl.data(DATASETS_URL, True).cache() # cache for repeated use
+resources = hxl.data(RESOURCES_URL, True).cache() # cache for repeated use
 
 ckan = ckanapi.RemoteCKAN(config.CONFIG['ckanurl'], apikey=config.CONFIG['apikey'])
 
-for country_row in hxl.data(COUNTRIES_URL):
+for country_row in hxl.data(COUNTRIES_URL, True):
     country = Country(country_row)
     for dataset_row in datasets:
         dataset = Dataset(dataset_row, country)

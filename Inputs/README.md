@@ -1,0 +1,1 @@
+This directory contains backup versions of the data inputs in the [Google Sheet](https://docs.google.com/spreadsheets/d/1tHbzC8F79wQhpLos7Zw2qLQJI-UzccddDt0ds7R88F8/edit), in case those become unavailable in the future.  You will need to edit the create-popstats-datasets.py script to point to these.
