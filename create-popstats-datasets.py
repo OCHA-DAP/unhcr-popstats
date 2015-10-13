@@ -1,7 +1,22 @@
 #!/usr/bin/python
 
-import ckan
+import ckanapi
 import hxl
+import urllib
+
+import pprint
+
+#
+# HXL-tagged input data
+#
+COUNTRIES_URL = 'https://docs.google.com/spreadsheets/d/1tHbzC8F79wQhpLos7Zw2qLQJI-UzccddDt0ds7R88F8/edit#gid=1998541723'
+DATASETS_URL = 'https://docs.google.com/spreadsheets/d/1tHbzC8F79wQhpLos7Zw2qLQJI-UzccddDt0ds7R88F8/edit#gid=778105659'
+RESOURCES_URL = 'https://docs.google.com/spreadsheets/d/1tHbzC8F79wQhpLos7Zw2qLQJI-UzccddDt0ds7R88F8/edit#gid=828285269'
+
+
+#
+# Classes with logic for handling countries, datasets, and resources
+#
 
 class Country(object):
     """Logic for a country."""
@@ -10,8 +25,16 @@ class Country(object):
         self.row = hxl_row
 
     @property
+    def code(self):
+        return self.row.get('country+code+iso3')
+
+    @property
     def name(self):
         return self.row.get('country+name+display')
+
+    @property
+    def unhcr_name(self):
+        return self.row.get('country+name+unhcr')
 
     @property
     def article(self):
@@ -32,6 +55,10 @@ class Dataset(object):
         self.country = country
 
     @property
+    def stub(self):
+        return self.row.get('id').format(self.country.code.lower())
+
+    @property
     def category(self):
         return self.row.get('category')
 
@@ -40,40 +67,69 @@ class Dataset(object):
         s = self.row.get('title')
         return s.format(self.country.full_name)
 
+    @property
+    def description(self):
+        return self.row.get('description+general').format(self.country.full_name)
+
 class Resource(object):
     """Logic for a resource."""
+
+    URL_PATTERN = 'http://proxy.hxlstandard.org/data.csv?url={url}&filter01=select&select-query01-01={pattern}={country}'
 
     def __init__(self, hxl_row, dataset):
         self.row = hxl_row
         self.dataset = dataset
 
     @property
-    def title(self):
+    def name(self):
+        return self.row.get('x_filename').format(self.dataset.category, self.dataset.country.code.lower())
+
+    @property
+    def description(self):
         s = self.row.get('title+' + self.dataset.category)
         return s.format(self.dataset.country.full_name)
 
     @property
-    def title_residence(self):
-        s = self.row.get('title+residence')
-        return s.format(self.dataset.country.full_name)
-
+    def url(self):
+        source_url = urllib.parse.quote(self.row.get('x_resource+link+source'))
+        pattern = urllib.parse.quote(self.dataset.row.get('x_pattern'))
+        country_name = urllib.parse.quote(self.dataset.country.unhcr_name)
+        return self.URL_PATTERN.format(url=source_url, pattern=pattern, country=country_name)
 
 #
-# HXL-tagged input data
+# Create or update the datasets
 #
-COUNTRIES_URL = 'https://docs.google.com/spreadsheets/d/1tHbzC8F79wQhpLos7Zw2qLQJI-UzccddDt0ds7R88F8/edit#gid=1998541723'
-DATASETS_URL = 'https://docs.google.com/spreadsheets/d/1tHbzC8F79wQhpLos7Zw2qLQJI-UzccddDt0ds7R88F8/edit#gid=778105659'
-RESOURCES_URL = 'https://docs.google.com/spreadsheets/d/1tHbzC8F79wQhpLos7Zw2qLQJI-UzccddDt0ds7R88F8/edit#gid=828285269'
-
-datasets = hxl.data(DATASETS_URL).cache()
-resources = hxl.data(RESOURCES_URL).cache()
+datasets = hxl.data(DATASETS_URL).cache() # cache for repeated use
+resources = hxl.data(RESOURCES_URL).cache() # cache for repeated use
 
 for country_row in hxl.data(COUNTRIES_URL):
     country = Country(country_row)
     print(country.name)
     for dataset_row in datasets:
         dataset = Dataset(dataset_row, country)
-        print('  ' + dataset.title)
+        tags = [{'name': tag.strip()} for tag in dataset.row.get('description+tags').split("\n")]
+        dataset_object = {
+            'name': dataset.stub,
+            'title': dataset.title,
+            'notes': dataset.description,
+            'dataset_source': dataset.row.get('source'),
+            'owner_org': 'unhcr',
+            'license_id': dataset.row.get('description+license'),
+            'methodology': dataset.row.get('description+method'),
+            'groups': [{'id': country.row.get('country+code+iso3').lower()}],
+            'tags': tags,
+            'resources': []
+        }
         for resource_row in resources:
             resource = Resource(resource_row, dataset)
-            print('    ' + resource.title)
+            resource_object = {
+                'name': resource.name,
+                'description': resource.description,
+                'url': resource.url,
+                'mimetype': 'text/csv',
+                'format': 'CSV'
+            }
+            dataset_object['resources'].append(resource_object)
+        pprint.pprint(dataset_object)
+
+# end
