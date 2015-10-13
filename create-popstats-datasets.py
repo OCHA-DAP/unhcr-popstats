@@ -1,5 +1,7 @@
 #!/usr/bin/python
 
+import config
+
 import ckanapi
 import hxl
 import urllib
@@ -7,7 +9,7 @@ import urllib
 import pprint
 
 #
-# HXL-tagged input data
+# Constants
 #
 COUNTRIES_URL = 'https://docs.google.com/spreadsheets/d/1tHbzC8F79wQhpLos7Zw2qLQJI-UzccddDt0ds7R88F8/edit#gid=1998541723'
 DATASETS_URL = 'https://docs.google.com/spreadsheets/d/1tHbzC8F79wQhpLos7Zw2qLQJI-UzccddDt0ds7R88F8/edit#gid=778105659'
@@ -102,9 +104,10 @@ class Resource(object):
 datasets = hxl.data(DATASETS_URL).cache() # cache for repeated use
 resources = hxl.data(RESOURCES_URL).cache() # cache for repeated use
 
+ckan = ckanapi.RemoteCKAN(config.CONFIG['ckanurl'], apikey=config.CONFIG['apikey'])
+
 for country_row in hxl.data(COUNTRIES_URL):
     country = Country(country_row)
-    print(country.name)
     for dataset_row in datasets:
         dataset = Dataset(dataset_row, country)
         tags = [{'name': tag.strip()} for tag in dataset.row.get('description+tags').split("\n")]
@@ -114,6 +117,7 @@ for country_row in hxl.data(COUNTRIES_URL):
             'notes': dataset.description,
             'dataset_source': dataset.row.get('source'),
             'owner_org': 'unhcr',
+            'package_creator': config.CONFIG['creator'],
             'license_id': dataset.row.get('description+license'),
             'methodology': dataset.row.get('description+method'),
             'caveats': dataset.row.get('description+caveats'),
@@ -131,6 +135,11 @@ for country_row in hxl.data(COUNTRIES_URL):
                 'format': 'CSV'
             }
             dataset_object['resources'].append(resource_object)
-        pprint.pprint(dataset_object)
+        try:
+            ckan.call_action('package_create', dataset_object)
+            print("Created {}...".format(dataset.stub))
+        except:
+            ckan.call_action('package_update', dataset_object)
+            print("Updated {}...".format(dataset.stub))
 
 # end

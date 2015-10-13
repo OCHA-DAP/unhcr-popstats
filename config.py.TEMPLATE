@@ -1,0 +1,7 @@
+# Copy this file to config.py, and fill in the values below
+
+CONFIG = {
+    'creator': '<CKAN USERNAME>',        # example: 'janesmith'
+    'ckanurl': '<CKAN INSTANCE URL>',    # example: 'https://ckan.example.org'
+    'apikey': '<CKAN USER API KEY>'      # example: '00000000-aaaa-1111-bbbb-222222cccccc'
+}
