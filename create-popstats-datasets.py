@@ -116,6 +116,7 @@ for country_row in hxl.data(COUNTRIES_URL):
             'owner_org': 'unhcr',
             'license_id': dataset.row.get('description+license'),
             'methodology': dataset.row.get('description+method'),
+            'caveats': dataset.row.get('description+caveats'),
             'groups': [{'id': country.row.get('country+code+iso3').lower()}],
             'tags': tags,
             'resources': []
