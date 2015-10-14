@@ -21,7 +21,7 @@ import ckanapi
 import hxl
 import urllib
 
-import pprint
+# import pprint
 
 #
 # Constants
@@ -29,15 +29,19 @@ import pprint
 COUNTRIES_URL = 'https://docs.google.com/spreadsheets/d/1tHbzC8F79wQhpLos7Zw2qLQJI-UzccddDt0ds7R88F8/edit#gid=1998541723'
 DATASETS_URL = 'https://docs.google.com/spreadsheets/d/1tHbzC8F79wQhpLos7Zw2qLQJI-UzccddDt0ds7R88F8/edit#gid=778105659'
 RESOURCES_URL = 'https://docs.google.com/spreadsheets/d/1tHbzC8F79wQhpLos7Zw2qLQJI-UzccddDt0ds7R88F8/edit#gid=828285269'
-
+# or from offline files
+# COUNTRIES_URL = 'Inputs/countries.csv'
+# DATASETS_URL = 'Inputs/datasets.csv'
+# RESOURCES_URL = 'Inputs/resources.csv'
 
 #
 # Classes with logic for handling countries, datasets, and resources
 #
 
+
 class Country(object):
     """Logic for a country."""
-    
+
     def __init__(self, hxl_row):
         self.row = hxl_row
 
@@ -64,6 +68,7 @@ class Country(object):
         else:
             return self.name
 
+
 class Dataset(object):
     """Logic for a dataset."""
 
@@ -87,6 +92,7 @@ class Dataset(object):
     @property
     def description(self):
         return self.row.get('description+general').format(self.country.full_name)
+
 
 class Resource(object):
     """Logic for a resource."""
@@ -116,8 +122,8 @@ class Resource(object):
 #
 # Create or update the datasets
 #
-datasets = hxl.data(DATASETS_URL, True).cache() # cache for repeated use
-resources = hxl.data(RESOURCES_URL, True).cache() # cache for repeated use
+datasets = hxl.data(DATASETS_URL, True).cache()  # cache for repeated use
+resources = hxl.data(RESOURCES_URL, True).cache()  # cache for repeated use
 
 ckan = ckanapi.RemoteCKAN(config.CONFIG['ckanurl'], apikey=config.CONFIG['apikey'])
 
