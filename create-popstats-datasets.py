@@ -119,7 +119,7 @@ class Resource(object):
 datasets = hxl.data(DATASETS_URL, True).cache() # cache for repeated use
 resources = hxl.data(RESOURCES_URL, True).cache() # cache for repeated use
 
-ckan = ckanapi.RemoteCKAN(config.CONFIG['ckanurl'], apikey=config.CONFIG['apikey'])
+ckan = ckanapi.RemoteCKAN(config.CONFIG['ckanurl'], apikey=config.CONFIG['apikey'], user_agent=config.CONFIG.get('user_agent', None))
 
 for country_row in hxl.data(COUNTRIES_URL, True):
     country = Country(country_row)
