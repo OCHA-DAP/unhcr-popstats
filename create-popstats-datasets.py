@@ -102,6 +102,15 @@ class Resource(object):
     def __init__(self, hxl_row, dataset):
         self.row = hxl_row
         self.dataset = dataset
+        self.description_pattern = self.row.get('title+' + self.dataset.category)
+
+    @property
+    def is_included(self):
+        """If there's no description pattern, then the resource should be skipped."""
+        if self.description_pattern:
+            return True
+        else:
+            return False
 
     @property
     def name(self):
@@ -109,13 +118,13 @@ class Resource(object):
 
     @property
     def description(self):
-        s = self.row.get('title+' + self.dataset.category)
-        return s.format(self.dataset.country.full_name)
+        return self.description_pattern.format(self.dataset.country.full_name)
 
     @property
     def url(self):
         source_url = urllib.parse.quote(self.row.get('x_resource+link+source'))
-        pattern = urllib.parse.quote(self.dataset.row.get('x_pattern'))
+        category = self.dataset.row.get('category')
+        pattern = urllib.parse.quote(self.row.get('x_pattern+{}'.format(category)))
         country_name = urllib.parse.quote(self.dataset.country.unhcr_name)
         return self.URL_PATTERN.format(url=source_url, pattern=pattern, country=country_name)
 
@@ -148,14 +157,15 @@ for country_row in hxl.data(COUNTRIES_URL, True):
         }
         for resource_row in resources:
             resource = Resource(resource_row, dataset)
-            resource_object = {
-                'name': resource.name,
-                'description': resource.description,
-                'url': resource.url,
-                'mimetype': 'text/csv',
-                'format': 'CSV'
-            }
-            dataset_object['resources'].append(resource_object)
+            if resource.is_included:
+                resource_object = {
+                    'name': resource.name,
+                    'description': resource.description,
+                    'url': resource.url,
+                    'mimetype': 'text/csv',
+                    'format': 'CSV'
+                }
+                dataset_object['resources'].append(resource_object)
         try:
             ckan.call_action('package_create', dataset_object)
             print("Created {}...".format(dataset.stub))
