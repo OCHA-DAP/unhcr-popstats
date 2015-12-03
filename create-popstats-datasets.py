@@ -20,6 +20,7 @@ import config
 import ckanapi
 import hxl
 import urllib
+import datetime
 
 # import pprint
 
@@ -146,6 +147,7 @@ for country_row in hxl.data(COUNTRIES_URL, True):
             'title': dataset.title,
             'notes': dataset.description,
             'dataset_source': dataset.row.get('source'),
+            'dataset_date': '01/01/1990-{}'.format(datetime.datetime.now().strftime('%m/%d/%Y')),
             'owner_org': 'unhcr',
             'package_creator': config.CONFIG['creator'],
             'license_id': dataset.row.get('description+license'),
