@@ -1,8 +1,8 @@
 Origin country resource description,Residence country resource description,Source dataset link,Filename
 #title+origin,#title+residence,#x_resource+link+source,#x_filename
-Refugee persons of concern from {} residing in other countries.,Refugee persons of concern from other countries residing in {}.,http://popstats.unhcr.org/en/persons_of_concern.hxl,unhcr_persons_of_concern_{}_{}.csv
-Time-series data for refugees from {} residing in other countries.,Time-series data for refugees from other countries residing in {}.,http://popstats.unhcr.org/en/time_series.hxl,unhcr_time_series_{}_{}.csv
-Demographic data for refugees from {} residing in other countries.,Demographic data for refugees from other countries residing in {}.,http://popstats.unhcr.org/en/demographics.hxl,unhcr_demographics_{}_{}.csv
+UNHCR persons of concern from {} residing in other countries.,UNHCR persons of concern from other countries residing in {}.,http://popstats.unhcr.org/en/persons_of_concern.hxl,unhcr_persons_of_concern_{}_{}.csv
+Time-series data for persons of concern from {} residing in other countries.,Time-series data for persons of concern from other countries residing in {}.,http://popstats.unhcr.org/en/time_series.hxl,unhcr_time_series_{}_{}.csv
+Demographic data for persons of concern from {} residing in other countries.,Demographic data for persons of concern from other countries residing in {}.,http://popstats.unhcr.org/en/demographics.hxl,unhcr_demographics_{}_{}.csv
 Refugee status determination for people from {} seeking asylum in other countries.,Refugee status determination for people from other countries seeking asylum in {}.,http://popstats.unhcr.org/en/asylum_seekers.hxl,unhcr_asylum_seekers_{}_{}.csv
 Monthly numbers for refugees from {} seeking asylum in other countries.,Monthly numbers for refugees from other countries seeking asylum in {}.,http://popstats.unhcr.org/en/asylum_seekers_monthly.hxl,unhcr_asylum_seekers_monthly_{}_{}.csv
 Refugees from {} resettled in other countries.,Refugees resettled in {} from other countries.,http://popstats.unhcr.org/en/resettlement.hxl,unhcr_resettlement_{}_{}.csv

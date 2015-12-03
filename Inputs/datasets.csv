@@ -1,6 +1,6 @@
 Category,Tag,URL stub,Title template,Source,Description template,License,Tags,Methodology,Caveats
 #category,#x_pattern,#id,#title,#source,#description +general,#description +license,#description +tags,#description +method,#description +caveats
-residence,country+residence,refugees-residing-{},Refugees from other countries residing in {},UNHCR,"Data about refugees from other countries residing in {}. There are six types of data available (by year, unless otherwise noted): 
+residence,country+residence,refugees-residing-{},UNHCR's populations of concern from other countries residing in {},UNHCR,"Data about UNHCR's populations of concern from other countries residing in {}. There are six types of data available (by year, unless otherwise noted): 
 
 1. Persons of concern
 
@@ -24,7 +24,7 @@ returned
 idps 
 returned refugees
 stateless persons",Census,"In some recent data, figures between 1 and 4 have been replaced with an asterisk (*). These represent situations where the figures are being kept confidential to protect the anonymity of individuals. Such figures are not included in any totals."
-origin,country+origin,refugees-originating-{},Refugees from {} residing in other countries,UNHCR,"Data about refugees from {} residing in other countries. There are six types of data available (by year, unless otherwise noted): 
+origin,country+origin,refugees-originating-{},UNHCR's populations of concern from {} residing in other countries,UNHCR,"Data about UNHCR's populations of concern from {} residing in other countries. There are six types of data available (by year, unless otherwise noted): 
 
 1. Persons of concern
 
