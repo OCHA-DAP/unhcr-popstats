@@ -30,16 +30,10 @@ import datetime
 COUNTRIES_URL = 'https://docs.google.com/spreadsheets/d/1tHbzC8F79wQhpLos7Zw2qLQJI-UzccddDt0ds7R88F8/edit#gid=1998541723'
 DATASETS_URL = 'https://docs.google.com/spreadsheets/d/1tHbzC8F79wQhpLos7Zw2qLQJI-UzccddDt0ds7R88F8/edit#gid=778105659'
 RESOURCES_URL = 'https://docs.google.com/spreadsheets/d/1tHbzC8F79wQhpLos7Zw2qLQJI-UzccddDt0ds7R88F8/edit#gid=828285269'
-# or from offline files
-# COUNTRIES_URL = 'Inputs/countries.csv'
-# DATASETS_URL = 'Inputs/datasets.csv'
-# RESOURCES_URL = 'Inputs/resources.csv'
 
 #
 # Classes with logic for handling countries, datasets, and resources
 #
-
-
 class Country(object):
     """Logic for a country."""
 
@@ -152,8 +146,10 @@ for country_row in hxl.data(COUNTRIES_URL, True):
             'package_creator': config.CONFIG['creator'],
             'license_id': dataset.row.get('description+license'),
             'methodology': dataset.row.get('description+method'),
+            'data_update_frequency': '0',
+            'dataset_date': '01/01/1990-12/31/2027',
             'caveats': dataset.row.get('description+caveats'),
-            'groups': [{'id': country.row.get('country+code+iso3').lower()}],
+            'groups': [{'name': country.row.get('country+code+iso3').lower()}],
             'tags': tags,
             'resources': []
         }
@@ -174,5 +170,7 @@ for country_row in hxl.data(COUNTRIES_URL, True):
         except:
             ckan.call_action('package_update', dataset_object)
             print("Updated {}...".format(dataset.stub))
+
+exit(0)
 
 # end
