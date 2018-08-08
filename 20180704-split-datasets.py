@@ -11,6 +11,17 @@ DEFAULT_DELAY = 1
 
 SPECS = [
     {
+        "stub_pattern": r"unhcr_time_series_residence_([a-z]{3}).csv",
+        "title": "Time-series data for UNHCR's populations of concern residing in {country_name}",
+        "name": "unhcr-time-series-residing-{country_code}",
+        "notes": "information about UNHCR's populations of concern for a given year and country of residence. Data is presented as a yearly time series across the page.",
+        "caveats": "In the data for the most-recent year, figures between 1 and 4 have been replaced with an asterisk (*). These represent situations where the figures are being kept confidential to protect the anonymity of individuals. Such figures are not included in any totals. Dataset may be empty if the UNHCR dataset does not currently contain any matching records.",
+        "tags": ['asylum-seekers', 'hxl', 'idps', 'migration', 'refugee', 'refugees', 'returnees', 'stateless'],
+        "url": "http://popstats.unhcr.org/en/time_series",
+        "subnational": False,
+        "start_date": "01/01/1951",
+    },
+    {
         "stub_pattern": r"unhcr_demographics_residence_([a-z]{3}).csv",
         "title": "Demographics for UNHCR's populations of concern residing in {country_name}",
         "name": "unhcr-demographics-residing-{country_code}",
@@ -19,6 +30,7 @@ SPECS = [
         "tags": ['hxl', 'migration', 'refugee', 'refugees', 'sadd'],
         "url": "http://popstats.unhcr.org/en/demographics",
         "subnational": True,
+        "start_date": "01/01/2005",
     },
     {
         "stub_pattern": r"unhcr_asylum_seekers_residence_([a-z]{3}).csv",
@@ -29,6 +41,7 @@ SPECS = [
         "tags": ['asylum-seekers', 'hxl', 'migration'],
         "url": "http://popstats.unhcr.org/en/asylum_seekers",
         "subnational": False,
+        "start_date": "01/01/2000",
     },
     {
         "stub_pattern": r"unhcr_asylum_seekers_monthly_residence_([a-z]{3}).csv",
@@ -39,6 +52,7 @@ SPECS = [
         "tags": ['asylum-seekers', 'hxl', 'migration', 'refugee', 'refugees'],
         "url": "http://popstats.unhcr.org/en/asylum_seekers_monthly",
         "subnational": False,
+        "start_date": "01/01/1999",
     },
     {
         "stub_pattern": r"unhcr_resettlement_residence_([a-z]{3}).csv",
@@ -49,6 +63,18 @@ SPECS = [
         "tags": ['hxl', 'migration', 'refugee', 'refugees', 'resettlement'],
         "url": "http://popstats.unhcr.org/en/resettlement",
         "subnational": False,
+        "start_date": "01/01/1959",
+    },
+    {
+        "stub_pattern": r"unhcr_time_series_origin_([a-z]{3}).csv",
+        "title": "Time-series data for UNHCR's populations of concern originating from {country_name}",
+        "name": "unhcr-time-series-originating-{country_code}",
+        "notes": "information about UNHCR's populations of concern for a given year and country of origin. Data is presented as a yearly time series across the page.",
+        "caveats": "In the data for the most-recent year, figures between 1 and 4 have been replaced with an asterisk (*). These represent situations where the figures are being kept confidential to protect the anonymity of individuals. Such figures are not included in any totals. Dataset may be empty if the UNHCR dataset does not currently contain any matching records.",
+        "tags": ['asylum-seekers', 'hxl', 'idps', 'migration', 'refugee', 'refugees', 'returnees', 'stateless'],
+        "url": "http://popstats.unhcr.org/en/time_series",
+        "subnational": False,
+        "start_date": "01/01/1951",
     },
     {
         "stub_pattern": r"unhcr_asylum_seekers_monthly_origin_([a-z]{3}).csv",
@@ -59,6 +85,7 @@ SPECS = [
         "tags": ['asylum-seekers', 'hxl', 'migration', 'refugee', 'refugees'],
         "url": "http://popstats.unhcr.org/en/asylum_seekers_monthly",
         "subnational": False,
+        "start_date": "01/01/1999",
     },
     {
         "stub_pattern": r"unhcr_resettlement_origin_([a-z]{3}).csv",
@@ -69,6 +96,7 @@ SPECS = [
         "tags": ['hxl', 'migration', 'refugee', 'refugees', 'resettlement'],
         "url": "http://popstats.unhcr.org/en/resettlement",
         "subnational": False,
+        "start_date": "01/01/1959",
     },
 ]
 
@@ -117,7 +145,7 @@ def split_popstats_package(ckan, package, situation, country_name, country_code)
                 new_package['data_update_frequency'] = '0' # live
                 new_package['author'] = 'Laurent Pitoiset'
                 new_package['author_email'] = 'pitoiset@unhcr.org'
-                new_package['dataset_date'] = '01/01/1990-12/31/2025'
+                new_package['dataset_date'] = '{start_date}-12/31/2025'.format(start_date=spec['start_date'])
                 new_package['maintainer'] = '7ae95211-71dd-484e-8538-2c625315eb56' # David Megginson
 
                 #pprint.pprint(new_package)
@@ -141,12 +169,14 @@ def split_popstats_package(ckan, package, situation, country_name, country_code)
         {"name": "idps"},
         {"name": "migration"},
         {"name": "refugees"},
+        {"name": "returnees"},
+        {"name": "stateless"},
     ]
     
     package['data_update_frequency'] = '0'
     package['author'] = 'Laurent Pitoiset'
     package['author_email'] = 'pitoiset@unhcr.org'
-    package['dataset_date'] = '01/01/1990-12/31/2025'
+    package['dataset_date'] = '01/01/1951-12/31/2025'
     package['maintainer'] = '7ae95211-71dd-484e-8538-2c625315eb56'
     ckan.call_action('package_update', package)
 
