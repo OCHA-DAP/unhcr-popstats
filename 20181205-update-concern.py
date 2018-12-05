@@ -15,7 +15,7 @@ def crawl_unhcr_packages(ckanurl, apikey, delay=1):
         m = re.match('^refugees-(originating|residing)-([a-z]{3})$', package['name'])
         if m:
             logger.info('Updating %s...', package['name'])
-            notes = "Information about UNHCR's populations of concern {context} {country}. Populations of concern include refugees, asylum seekers, internally-displaced people (IDPs), returned IDPs, returned refugees, stateless people, and others of concern.".format(
+            notes = "Year-by-year data about UNHCR's populations of concern {context} {country}. Populations of concern include refugees, asylum seekers, internally-displaced people (IDPs), returned IDPs, returned refugees, stateless people, and others of concern.".format(
                 context="residing in" if m.group(1) == "residing" else "originating from",
                 country=package['groups'][0]['display_name']
             )
