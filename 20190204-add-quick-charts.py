@@ -4,8 +4,10 @@ import ckancrawler, copy, logging, re
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger("add-quickcharts")
+"""Python logging object"""
 
 DEFAULT_DELAY = 1
+"""Default delay between API calls, in seconds"""
 
 PATTERNS = [
     r"(refugees-residing)-([a-z]{3})",
@@ -19,9 +21,52 @@ PATTERNS = [
     r"unhcr-(resettlement-residing)-([a-z]{3})",
     r"unhcr-(resettlement-originating)-([a-z]{3})",
 ]
+"""Regular expressions to match dataset shortnames.
+First group is the type, and second is the ISO3 country code
+"""
+
+MODEL_QUICKCHARTS = [
+    ["refugees-residing", "refugees-residing-jor"],
+    ["refugees-originating", "refugees-originating-mmr"],
+    ["time-series-residing", "unhcr-time-series-residing-nld"],
+    ["time-series-originating", "unhcr-time-series-originating-mli"],
+    ["demographics-residing", "unhcr-demographics-residing-nga"],
+    ["asylum-seekers-determination", "unhcr-asylum-seekers-determination-dnk"],
+    ["asylum-seekers-residing", "unhcr-asylum-seekers-residing-ita"],
+    ["asylum-seekers-originating", "unhcr-asylum-seekers-originating-afg"],
+    ["resettlement-residing", "unhcr-resettlement-residing-can"],
+    ["resettlement-originating", "unhcr-resettlement-originating-syr"],
+]
+"""Datasets containing model Quick Charts configurations to copy to others of the same type"""
+
+quickcharts_configurations = {}
+"""Quick Charts configuration strings, keyed by dataset type (to be loaded)"""
+
+def load_models(ckan):
+    """Load model Quick Charts configurations
+    Populates quickcharts_configurations
+    @param ckan: the CKAN API access object
+    """
+    for entry in MODEL_QUICKCHARTS:
+        package = ckan.action.package_show(id=entry[1])
+        resource_id = package["resources"][0]["id"]
+        views = ckan.action.resource_view_list(id=resource_id)
+        for view in views:
+            # Find the Quick Charts view
+            if view["view_type"] == "hdx_hxl_preview":
+                quickcharts_configurations[entry[0]] = view["hxl_preview_config"]
+                logger.info("Loaded Quick Charts configuration for %s from %s", entry[0], entry[1])
+                break
+        if entry[0] not in quickcharts_configurations:
+            logger.error("Failed to load model configuration for %s", entry[0])
+            exit(1)
+    print(quickcharts_configurations)
+    exit(0)
+        
 
 def add_quickcharts(package, dataset_type, iso3):
     """Add Quick Charts to a dataset after a match.
+    Invoked by try_patterns()
     @param package: the CKAN package (dataset) structure
     @param dataset_type: a string identifying the dataset type (e.g. "refugees-originating")
     @param iso3: the ISO3 code for the country
@@ -29,8 +74,9 @@ def add_quickcharts(package, dataset_type, iso3):
     print(package["name"], dataset_type, iso3)
 
 def try_patterns(package):
-    """Scan a dataset short name against all known patterns.
-    If sucessful, extract the type and country ISO3 code and invoke
+    """Match a dataset short name against all known patterns.
+    Invoked by scan_datasets()
+    If successful, extract the type and country ISO3 code and invoke
     add_quickcharts().
     @param package: the CKAN package (dataset) structure
     """
@@ -49,7 +95,8 @@ def scan_datasets(ckanurl, apikey, delay=1):
     @param delay: the delay in seconds between API calls
     """
     crawler = ckancrawler.Crawler(ckan_url=ckanurl, apikey=apikey, delay=delay)
-    for package in crawler.packages(fq="organization:unhcr"):
+    load_models(crawler.ckan)
+    for package in crawler.packages(fq="organization:unhcr"): # scan only UNHCR datasets
         try_patterns(package)
 
 #
@@ -58,4 +105,3 @@ def scan_datasets(ckanurl, apikey, delay=1):
 if __name__ == '__main__':
     from config import CONFIG
     scan_datasets(CONFIG['ckanurl'], CONFIG['apikey'], DEFAULT_DELAY);
-
