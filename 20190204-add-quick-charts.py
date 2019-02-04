@@ -87,8 +87,17 @@ def add_quickcharts(ckan, package, dataset_type, iso3):
             ckan.call_action("resource_view_update", view)
             return
 
-    # If we get to here, then we failed
-    raise Exception("Failed to find a Quick Charts view for {}".format(package["name"]))
+    # If we get to here, then we need to add the view
+    logger.warn("Missing Quick Charts view for %s (creating)", package["name"])
+    view = {
+        "description": "",
+        "title": "Quick Charts",
+        "resource_id": resource_id,
+        "view_type": "hdx_hxl_preview",
+        "package_id": package["id"],
+        "hxl_preview_config": quickcharts_configurations[dataset_type],
+    }
+    ckan.call_action("resource_view_create", view)
 
 def try_patterns(ckan, package):
     """Match a dataset short name against all known patterns.
