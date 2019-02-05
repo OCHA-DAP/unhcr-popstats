@@ -1,6 +1,6 @@
 """2019-02-04 enable Quick Charts for UNHCR datasets"""
 
-import ckancrawler, copy, logging, re
+import ckanapi, ckancrawler, copy, logging, re
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger("add-quickcharts")
@@ -94,10 +94,12 @@ def add_quickcharts(ckan, package, dataset_type, iso3):
         "title": "Quick Charts",
         "resource_id": resource_id,
         "view_type": "hdx_hxl_preview",
-        "package_id": package["id"],
         "hxl_preview_config": quickcharts_configurations[dataset_type],
     }
-    ckan.call_action("resource_view_create", view)
+    try:
+        ckan.call_action("resource_view_create", view)
+    except ckanapi.errors.CKANAPIError as e:
+        logger.warn("Ignoring CKANAPIError %s", str(e))
 
 def try_patterns(ckan, package):
     """Match a dataset short name against all known patterns.
