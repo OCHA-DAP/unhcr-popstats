@@ -28,7 +28,7 @@ First group is the type, and second is the ISO3 country code
 MODEL_QUICKCHARTS = [
     ["refugees-residing", "refugees-residing-jor"],
     ["refugees-originating", "refugees-originating-mmr"],
-    ["time-series-residing", "unhcr-time-series-residing-nld"],
+    ["time-series-residing", "unhcr-time-series-residing-syr"],
     ["time-series-originating", "unhcr-time-series-originating-mli"],
     ["demographics-residing", "unhcr-demographics-residing-nga"],
     ["asylum-seekers-determination", "unhcr-asylum-seekers-determination-dnk"],
