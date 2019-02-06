@@ -96,10 +96,7 @@ def add_quickcharts(ckan, package, dataset_type, iso3):
         "view_type": "hdx_hxl_preview",
         "hxl_preview_config": quickcharts_configurations[dataset_type],
     }
-    try:
-        ckan.call_action("resource_view_create", view)
-    except ckanapi.errors.CKANAPIError as e:
-        logger.warn("Ignoring CKANAPIError %s", str(e))
+    ckan.call_action("resource_view_create", view)
 
 def try_patterns(ckan, package):
     """Match a dataset short name against all known patterns.
