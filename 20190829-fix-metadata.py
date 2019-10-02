@@ -40,9 +40,10 @@ def update_resource_metadata(ckan, package):
         if result:
             logger.info("Updating %s", package["name"])
             for resource in package["resources"]:
-                resource["url_type"] = "api"
-                resource["resource_type"] = "api"
-                ckan.call_action("resource_update", resource)
+                if resource["url_type"] != "api" or resource["resource_type"] != "api":
+                    resource["url_type"] = "api"
+                    resource["resource_type"] = "api"
+                    ckan.call_action("resource_update", resource)
             return
     logger.warning("Skipping %s", package["name"])
     
