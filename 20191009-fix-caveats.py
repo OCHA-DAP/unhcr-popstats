@@ -11,7 +11,7 @@ logger = logging.getLogger("fix caveats")
 DEFAULT_DELAY = 0
 """Default delay between API calls, in seconds"""
 
-NEW_CAVEATS = """In the most-recent data, figures between 1 and 4 have been replaced with an asterisk (*). These represent situations where figures are being kept confidential to protect the anonymity of individuals. Such figures are not included in any totals. Due to retroactive adjustments implemented by States, totals in this dataset may differ from annual totals published by the competent national authorities. Dataset may be empty if the UNHCR dataset does not currently contain any matching records."""
+NEW_CAVEATS = """Data is available from 2000. In the most-recent data, figures between 1 and 4 have been replaced with an asterisk (*). These represent situations where figures are being kept confidential to protect the anonymity of individuals. Such figures are not included in any totals. Due to retroactive adjustments implemented by States, totals in this dataset may differ from annual totals published by the competent national authorities. Dataset may be empty if the UNHCR dataset does not currently contain any matching records."""
 
 def update_resource_metadata(ckan, package):
     """Match a dataset short name against all known patterns.
@@ -21,7 +21,7 @@ def update_resource_metadata(ckan, package):
     @param ckan: the CKAN API access object
     @param package: the CKAN package (dataset) structure
     """
-    result = re.fullmatch(r"unhcr-(asylum-seekers-determination)-([a-z]{3})", package["name"]):
+    result = re.fullmatch(r"unhcr-(asylum-seekers-determination)-([a-z]{3})", package["name"])
     if result:
         logger.info("Updating %s", package["name"])
         package["caveats"] = NEW_CAVEATS
