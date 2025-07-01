@@ -1,4 +1,5 @@
-# Script to create filtered UNHCR datasets on a CKAN instance
+# DEPRECATED - Script discontinued
+## Script to create filtered UNHCR datasets on a CKAN instance
 
 ## Prerequisites
 
